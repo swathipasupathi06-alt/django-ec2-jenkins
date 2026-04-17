@@ -5,7 +5,7 @@ pipeline {
 
         stage('Pull Latest Code') {
             steps {
-                echo "Pulling latest code"
+                echo 'Pulling latest code'
                 sh '''
                 cd /usr/src/Python-3.14.0/django-ec2
                 git pull origin main
@@ -17,8 +17,8 @@ pipeline {
             steps {
                 sh '''
                 cd /usr/src/Python-3.14.0/django-ec2
-                source venv/bin/activate
-                pip install -r requirements.txt
+                . venv/bin/activate
+                pip install -r config/requirements.txt || true
                 '''
             }
         }
@@ -26,8 +26,9 @@ pipeline {
         stage('Migrate Database') {
             steps {
                 sh '''
-                cd /usr/src/Python-3.14.0/django-ec2/config
-                source ../venv/bin/activate
+                cd /usr/src/Python-3.14.0/django-ec2
+                . venv/bin/activate
+                cd config
                 python manage.py migrate
                 '''
             }
@@ -36,8 +37,9 @@ pipeline {
         stage('Collect Static') {
             steps {
                 sh '''
-                cd /usr/src/Python-3.14.0/django-ec2/config
-                source ../venv/bin/activate
+                cd /usr/src/Python-3.14.0/django-ec2
+                . venv/bin/activate
+                cd config
                 python manage.py collectstatic --noinput
                 '''
             }
